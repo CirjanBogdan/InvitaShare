@@ -73,11 +73,12 @@ namespace InvitaShare.Controllers
             var guest = _db.InvitedPersons.Find(id);
             if (ModelState.IsValid)
             {
-                if (guest is not null)
+                if (guest is null)
                 {
-                    _db.InvitedPersons.Remove(guest);
-                    _db.SaveChanges();
+                    return NotFound();
                 }
+                _db.InvitedPersons.Remove(guest);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(guest);
