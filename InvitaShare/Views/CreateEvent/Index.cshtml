@@ -1,0 +1,63 @@
+﻿@model IEnumerable<InvitedPerson> 
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="container p-4">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-primary">Guests</h2>
+        </div>
+
+        <div class="col" style="text-align: right">
+            <a asp-controller="CreateEvent" asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> &nbsp Add Guest </a>
+        </div>
+    </div>
+    <br />
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Comments</th>
+                <th>RSPV</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var inv in Model)
+            {
+                <tr>
+                    <td>
+                        @inv.Name
+                    </td>
+                    <td>
+                        @inv.Email
+                    </td>
+                    <td>
+                        @inv.PhoneNumber
+                    </td>
+                    <td>
+                        @inv.Comments
+                    </td>
+                    <td>
+                        @inv.RSVP
+                    </td>
+                    <td>
+                        <div class="col" style="text-align: right">
+                            <a asp-controller="CreateEvent" asp-action="Edit" asp-route-id="@inv.Id" class="btn btn-primary"><i class="bi bi-plus-circle"></i> &nbsp Edit </a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="col" style="text-align: right">
+                            <a asp-controller="CreateEvent" asp-action="Delete" asp-route-id="@inv.Id" class="btn btn-primary"><i class="bi bi-plus-circle"></i> &nbsp Delete </a>
+                        </div>
+                    </td>
+                </tr>
+                
+            }
+        </tbody>
+    </table>
+</div>
+
