@@ -30,6 +30,9 @@ namespace InvitaShare.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ChurchName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -51,6 +54,21 @@ namespace InvitaShare.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ParentName1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParentName2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PartnerName1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PartnerName2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RestaurantName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Events");
@@ -58,6 +76,29 @@ namespace InvitaShare.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Event");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("InvitaShare.Models.Guest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Guests");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -279,15 +320,8 @@ namespace InvitaShare.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ChurchName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ParentName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RestaurantName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("BaptismEvent");
@@ -305,15 +339,6 @@ namespace InvitaShare.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RestaurantName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Events", t =>
-                        {
-                            t.Property("RestaurantName")
-                                .HasColumnName("WeddingEvent_RestaurantName");
-                        });
-
                     b.HasDiscriminator().HasValue("WeddingEvent");
                 });
 
@@ -322,6 +347,17 @@ namespace InvitaShare.Data.Migrations
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+                });
+
+            modelBuilder.Entity("InvitaShare.Models.Guest", b =>
+                {
+                    b.HasOne("InvitaShare.Models.Event", "Event")
+                        .WithMany("Guests")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -373,6 +409,11 @@ namespace InvitaShare.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("InvitaShare.Models.Event", b =>
+                {
+                    b.Navigation("Guests");
                 });
 #pragma warning restore 612, 618
         }

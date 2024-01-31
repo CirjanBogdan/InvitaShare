@@ -34,7 +34,7 @@ namespace InvitaShare.Controllers
         public IActionResult WeddingFilter()
         {
             IEnumerable<Event> events = _context.WeddingEvents;
-            return View(events); // incerc sa apas pe un buton si sa imi arate doar nuntile
+            return View(events);
         }
 
         public IActionResult BaptismFilter()
@@ -49,10 +49,55 @@ namespace InvitaShare.Controllers
             return View(events); 
         }
 
+
         public IActionResult Create()
         {
             return View();
         }
+
+
+        public ActionResult CreateEvent()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateEvent(string EventType)
+        {
+            if (EventType == "Wedding")
+            {
+                return RedirectToAction("CreateWeddingEvent");
+            } else if (EventType == "Baptism")
+            {
+                return RedirectToAction("CreateBaptismEvent");
+            }
+            return RedirectToAction("Index"); //tre sa ma intorc daca e alt tip in afara de wedding si baptism
+        }
+
+
+
+
+
+
+
+
+        //public async Task<IActionResult> CreateEvent(Event newEvent)
+        //{
+        //    var currentUser = await _userManager.GetUserAsync(User);
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (currentUser != null)
+        //        {
+        //            weddingEvent.CreatorUserId = currentUser.Id.ToString();
+        //            weddingEvent.EventType = "Wedding".ToString();
+        //            _context.WeddingEvents.Add(weddingEvent);
+        //            _context.SaveChanges();
+        //            return RedirectToAction("Index");
+        //        }
+        //        else { return NotFound(); }
+        //    }
+        //    return RedirectToAction("Create");
+        //}
 
         public IActionResult CreateWeddingEvent()
         {

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<InvitaShare.Models.Event>
+﻿@model IEnumerable<Event>
 
 @{
     ViewData["Title"] = "Index";
@@ -6,7 +6,25 @@
 
 <h1>Index</h1>
 
-<p><a asp-action="Create">Create New Event</a></p>
+@* <p><a asp-action="Create">Create New Event</a></p> *@
+@using (Html.BeginForm("CreateEvent", "Event"))
+{
+    <select id="EventType" name="EventType">
+        <option>Create new Event</option>
+        <option value="Wedding">Wedding</option>
+        <option value="Baptism">Baptism</option>
+    </select>
+
+    <br />
+
+    <input type="submit" value="Submit" />
+}
+
+@if (ViewData["Data"] != null)
+{
+    <h1>@ViewData["Data"].ToString()</h1>
+}
+
 <p><a asp-action="WeddingFilter">Filter Wedding Events</a></p>
 <p><a asp-action="BaptismFilter">Filter Baptism Events</a></p>
 <p><a asp-action="Index">My Events</a></p>
@@ -40,10 +58,13 @@
                 @Html.DisplayFor(modelItem => item.EventDate)
             </td>
             <td>
+                <p><a asp-controller="Guest" asp-action="Index" method="get" asp-route-id="@item.Id">Add guest</a></p>
+            </td>
+            @* <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            </td> *@
         </tr>
 }
     </tbody>

@@ -15,5 +15,18 @@ namespace InvitaShare.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<WeddingEvent> WeddingEvents { get; set;}
         public DbSet<BaptismEvent> BaptismEvents { get; set;}
+        public DbSet<Guest> Guests { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Event>()
+                .HasMany(e => e.Guests)
+                .WithOne(e => e.Event)
+                .HasForeignKey(e => e.EventId)
+                .IsRequired();
+        }
     }
+    
 }
