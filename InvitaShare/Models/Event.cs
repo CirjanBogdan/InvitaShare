@@ -7,12 +7,8 @@ namespace InvitaShare.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; } = null!;
+        public string EventName { get; set; } = null!;
         public string? CreatorUserId { get; set; }
-        public string? PartnerName1 { get; set; }
-        public string? PartnerName2 { get; set; }
-        public string? ParentName1 { get; set; }
-        public string? ParentName2 { get; set; }
         public string? EventType { get; set; }
         public string? RestaurantName { get; set; }
         public string? ChurchName { get; set; }

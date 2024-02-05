@@ -1,40 +1,16 @@
 ﻿@model IEnumerable<Event>
 
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-@* <p><a asp-action="Create">Create New Event</a></p> *@
-@using (Html.BeginForm("CreateEvent", "Event"))
-{
-    <select id="EventType" name="EventType">
-        <option>Create new Event</option>
-        <option value="Wedding">Wedding</option>
-        <option value="Baptism">Baptism</option>
-    </select>
-
-    <br />
-
-    <input type="submit" value="Submit" />
-}
-
-@if (ViewData["Data"] != null)
-{
-    <h1>@ViewData["Data"].ToString()</h1>
-}
-
-<p><a asp-action="WeddingFilter">Filter Wedding Events</a></p>
-<p><a asp-action="BaptismFilter">Filter Baptism Events</a></p>
-<p><a asp-action="Index">My Events</a></p>
-<p><a asp-action="ShowAllEvents">All events</a></p>
+<div>
+    <partial name="_CreateAndFilters.cshtml" />    
+</div>
+<br />
+<h1>All user events</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.EventName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.EventType)
@@ -46,26 +22,24 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventDate)
-            </td>
-            <td>
-                <p><a asp-controller="Guest" asp-action="Index" method="get" asp-route-id="@item.Id">Add guest</a></p>
-            </td>
-            @* <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td> *@
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EventDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -6,20 +6,33 @@
 
 <h1>BaptismFilter</h1>
 
-<p><a asp-action="Create">Create New Event</a></p>
-<p><a asp-action="WeddingFilter">Filter Wedding Events</a></p>
-<p><a asp-action="BaptismFilter">Filter Baptism Events</a></p>
-<p><a asp-action="Index">My Events</a></p>
-<p><a asp-action="ShowAllEvents">All events</a></p>
+<div>
+    <partial name="_CreateAndFilters.cshtml" />
+</div>
 
 <table class="table">
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.EventType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MotherName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FatherName)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.ChildName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParentName)
+                @Html.DisplayNameFor(model => model.GodParent1)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GodParent2)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ChurchName)
@@ -28,14 +41,9 @@
                 @Html.DisplayNameFor(model => model.RestaurantName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EventType)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.EventDate)
             </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -43,22 +51,31 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.EventType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MotherName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FatherName)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.ChildName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ParentName)
+                @Html.DisplayFor(modelItem => item.GodParent1)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GodParent2)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ChurchName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.RestaurantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EventType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EventDate)

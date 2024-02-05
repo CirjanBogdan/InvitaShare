@@ -22,6 +22,53 @@ namespace InvitaShare.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            return View(await _context.Events.ToListAsync());
+        }
+
+        //[HttpPost]
+        //public IActionResult CreateEvent(string EventType)
+        //{
+        //    if (EventType == "Wedding")
+        //    {
+        //        return RedirectToAction("CreateWeddingEvent");
+        //    } else if (EventType == "Baptism")
+        //    {
+        //        return RedirectToAction("CreateBaptismEvent");
+        //    }
+        //    return RedirectToAction("Index"); 
+        //}
+
+        [HttpPost]
+        public IActionResult CreateEvent([Bind("EventType")] Event @event)
+        {
+            if (@event.EventType != null)
+            {
+                return RedirectToAction("Create" + @event.EventType.ToString() + "Event");
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult FilterEvents(string eventFilter)
+        {
+            if (eventFilter == "allUsers")
+            {
+                return RedirectToAction("Index");
+            } else if (eventFilter == "wedding")
+            {
+                return RedirectToAction("WeddingFilter");
+            } else if (eventFilter == "baptism")
+            {
+                return RedirectToAction("BaptismFilter");
+            } else if (eventFilter == "myEvents")
+            {
+                return RedirectToAction("MyEventsFilter");
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> MyEventsFilter()
+        {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser != null)
             {
@@ -40,64 +87,10 @@ namespace InvitaShare.Controllers
         public IActionResult BaptismFilter()
         {
             IEnumerable<Event> events = _context.BaptismEvents;
-            return View(events); 
+            return View(events);
         }
 
-        public IActionResult ShowAllEvents()
-        {
-            IEnumerable<Event> events = _context.Events;
-            return View(events); 
-        }
-
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-
-        public ActionResult CreateEvent()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult CreateEvent(string EventType)
-        {
-            if (EventType == "Wedding")
-            {
-                return RedirectToAction("CreateWeddingEvent");
-            } else if (EventType == "Baptism")
-            {
-                return RedirectToAction("CreateBaptismEvent");
-            }
-            return RedirectToAction("Index"); //tre sa ma intorc daca e alt tip in afara de wedding si baptism
-        }
-
-
-
-
-
-
-
-
-        //public async Task<IActionResult> CreateEvent(Event newEvent)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (currentUser != null)
-        //        {
-        //            weddingEvent.CreatorUserId = currentUser.Id.ToString();
-        //            weddingEvent.EventType = "Wedding".ToString();
-        //            _context.WeddingEvents.Add(weddingEvent);
-        //            _context.SaveChanges();
-        //            return RedirectToAction("Index");
-        //        }
-        //        else { return NotFound(); }
-        //    }
-        //    return RedirectToAction("Create");
-        //}
+        
 
         public IActionResult CreateWeddingEvent()
         {

@@ -4,19 +4,17 @@
     ViewData["Title"] = "ShowAllEvents";
 }
 
-<h1>ShowAllEvents</h1>
+<div>
+    <partial name="_CreateAndFilters.cshtml" />
+</div>
 
-<p><a asp-action="Create">Create New Event</a></p>
-<p><a asp-action="WeddingFilter">Filter Wedding Events</a></p>
-<p><a asp-action="BaptismFilter">Filter Baptism Events</a></p>
-<p><a asp-action="Index">My Events</a></p>
-<p><a asp-action="ShowAllEvents">All events</a></p>
+<h1>My Events</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.EventName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.EventType)
@@ -31,7 +29,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.EventName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EventType)
