@@ -50,7 +50,6 @@ namespace InvitaShare.Controllers
                 HttpContext.Session.SetInt32("currentPage", 0);
             }
             currentPage = HttpContext.Session.GetInt32("currentPage") ?? 0;
-            ViewData["caca"] = currentPage;
             return View(await query.Skip(currentPage * 3).Take(resultPerPage).ToListAsync());
         }
 
