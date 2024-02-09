@@ -20,6 +20,22 @@ namespace InvitaShare
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IOTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.Name = ".MySampleMVCWeb.Session";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.Path = "/";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,6 +56,8 @@ namespace InvitaShare
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

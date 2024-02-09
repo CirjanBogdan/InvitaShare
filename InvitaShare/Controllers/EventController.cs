@@ -12,6 +12,7 @@ namespace InvitaShare.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        public int PageIndex { get; set; }
 
         public EventController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
@@ -19,10 +20,38 @@ namespace InvitaShare.Controllers
             _userManager = userManager;
         }
 
-        [Authorize]
-        public async Task<IActionResult> Index()
+        
+        public IActionResult Test()
         {
-            return View(await _context.Events.ToListAsync());
+            return View(_context.Events.ToList());
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Index(string nextPage, string previousPage)
+        {
+            var resultPerPage = 3;
+            var currentPage = HttpContext.Session.GetInt32("currentPage") ?? 0;
+            var query = from s in _context.Events select s;
+            var maxPage = Math.Ceiling(query.Count() / (double)resultPerPage - 1);
+            if (!string.IsNullOrEmpty(nextPage) && maxPage > currentPage)
+            {
+                HttpContext.Session.SetInt32("currentPage", currentPage + 1);
+            }
+            else if (!string.IsNullOrEmpty(previousPage) && currentPage > 0)
+            {
+                HttpContext.Session.SetInt32("currentPage", currentPage - 1);
+            } 
+            else if (currentPage == maxPage || currentPage == 0)
+            {
+                HttpContext.Session.SetInt32("currentPage", currentPage);
+            }
+            else
+            {
+                HttpContext.Session.SetInt32("currentPage", 0);
+            }
+            currentPage = HttpContext.Session.GetInt32("currentPage") ?? 0;
+            ViewData["caca"] = currentPage;
+            return View(await query.Skip(currentPage * 3).Take(resultPerPage).ToListAsync());
         }
 
         //[HttpPost]
@@ -102,16 +131,25 @@ namespace InvitaShare.Controllers
         public async Task<IActionResult> CreateWeddingEvent(WeddingEvent weddingEvent)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (ModelState.IsValid)
+            try
             {
-                if (currentUser != null)
+                if (ModelState.IsValid)
                 {
-                    weddingEvent.CreatorUserId = currentUser.Id.ToString();
-                    weddingEvent.EventType = "Wedding".ToString();
-                    _context.WeddingEvents.Add(weddingEvent);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
-                } else { return NotFound(); }                
+                    if (currentUser != null)
+                    {
+                        weddingEvent.CreatorUserId = currentUser.Id.ToString();
+                        weddingEvent.EventType = "Wedding".ToString();
+                        _context.WeddingEvents.Add(weddingEvent);
+                        _context.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    else { return NotFound(); }
+                }
+            } catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             return RedirectToAction("Create");
         }
@@ -141,4 +179,6 @@ namespace InvitaShare.Controllers
             return RedirectToAction("Create");
         }
     }
+
+
 }

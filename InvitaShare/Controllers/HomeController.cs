@@ -13,8 +13,14 @@ namespace InvitaShare.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+
+        public IActionResult Index(string test)
         {
+            var currentValue = HttpContext.Session.GetInt32("test") ?? 1;
+            if (!string.IsNullOrEmpty(test))
+            HttpContext.Session.SetInt32("test", currentValue + 1);
+
+            ViewData["indexPage"] = HttpContext.Session.GetInt32("test");
             return View();
         }
 

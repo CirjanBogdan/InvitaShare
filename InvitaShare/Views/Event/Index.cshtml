@@ -7,7 +7,7 @@
 <h1>All user events</h1>
 
 <table class="table">
-    <thead>
+    @* <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.EventName)
@@ -20,7 +20,7 @@
             </th>
             <th></th>
         </tr>
-    </thead>
+    </thead> *@
     <tbody>
         @foreach (var item in Model)
         {
@@ -43,3 +43,10 @@
         }
     </tbody>
 </table>
+
+
+<a asp-action="Index" asp-route-previousPage="previousPage">Previous Page</a>
+<a asp-action="Index" asp-route-nextPage="bogdan">Next Page</a>
+<br />
+<p>@ViewData["caca"]</p>
+
