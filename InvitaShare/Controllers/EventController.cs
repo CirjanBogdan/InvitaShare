@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace InvitaShare.Controllers
 {
@@ -27,44 +29,28 @@ namespace InvitaShare.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Index(string nextPage, string previousPage)
+        public async Task<IActionResult> Index(int? pageNumber, string? eventFilter)
         {
-            var resultPerPage = 3;
-            var currentPage = HttpContext.Session.GetInt32("currentPage") ?? 0;
-            var query = from s in _context.Events select s;
-            var maxPage = Math.Ceiling(query.Count() / (double)resultPerPage - 1);
-            if (!string.IsNullOrEmpty(nextPage) && maxPage > currentPage)
-            {
-                HttpContext.Session.SetInt32("currentPage", currentPage + 1);
-            }
-            else if (!string.IsNullOrEmpty(previousPage) && currentPage > 0)
-            {
-                HttpContext.Session.SetInt32("currentPage", currentPage - 1);
-            } 
-            else if (currentPage == maxPage || currentPage == 0)
-            {
-                HttpContext.Session.SetInt32("currentPage", currentPage);
-            }
-            else
-            {
-                HttpContext.Session.SetInt32("currentPage", 0);
-            }
-            currentPage = HttpContext.Session.GetInt32("currentPage") ?? 0;
-            return View(await query.Skip(currentPage * 3).Take(resultPerPage).ToListAsync());
+            var pageSize = 3;
+            var events = _context.Events.AsQueryable();
+            SetEventFilter(eventFilter, ref events);
+            return View(await PaginatedList<Event>.CreateAsync(events, pageNumber ?? 1, pageSize));
         }
 
-        //[HttpPost]
-        //public IActionResult CreateEvent(string EventType)
-        //{
-        //    if (EventType == "Wedding")
-        //    {
-        //        return RedirectToAction("CreateWeddingEvent");
-        //    } else if (EventType == "Baptism")
-        //    {
-        //        return RedirectToAction("CreateBaptismEvent");
-        //    }
-        //    return RedirectToAction("Index"); 
-        //}
+        public void SetEventFilter(string? eventFilter, ref IQueryable<Event> events)
+        {
+            if (eventFilter is not null)
+                HttpContext.Session.SetString("eventFilter", eventFilter);
+            else
+                HttpContext.Session.SetString("eventFilter", "");
+
+            eventFilter = HttpContext.Session.GetString("eventFilter") ?? string.Empty;
+            if (!string.IsNullOrEmpty(eventFilter))
+            {
+                events = _context.Events.Where(e => e.EventType == eventFilter).AsQueryable();
+                ViewData["eventFilterResult"] = eventFilter;
+            }
+        }
 
         [HttpPost]
         public IActionResult CreateEvent([Bind("EventType")] Event @event)

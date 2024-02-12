@@ -1,21 +1,32 @@
 ﻿using InvitaShare.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace InvitaShare
 {
     public class PaginatedList<T> : List<T>
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
-        public int NumarPagina { get; set; }
+        public int PageIndex { get; private set; }
+        public int TotalPages { get; private set; }
 
-        public PaginatedList(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public PaginatedList(List<T> items, int count, int pageIndex, int pageSize)
         {
-            _context = context;
-            _userManager = userManager;
+            PageIndex = pageIndex;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            AddRange(items);
         }
-        
-        // vreau sa folosesc "NumarPagina" ca sa pot pasa data din controller si view si invers/// si Modelul de Event in Index
-        
+
+        public bool HasPreviousPage => PageIndex > 1;
+
+        public bool HasNextPage => PageIndex < TotalPages;
+
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
     }
 }
+
