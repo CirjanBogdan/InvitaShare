@@ -21,7 +21,6 @@ namespace InvitaShare.Controllers
             _context = context;
             _userManager = userManager;
         }
-
         
         public IActionResult Test()
         {
@@ -53,7 +52,7 @@ namespace InvitaShare.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateEvent([Bind("EventType")] Event @event)
+        public IActionResult CreateNewEvent([Bind("EventType")] Event @event)
         {
             if (@event.EventType != null)
             {
@@ -61,82 +60,10 @@ namespace InvitaShare.Controllers
             }
             return RedirectToAction("Index");
         }
-
-        [HttpPost]
-        public IActionResult FilterEvents(string eventFilter)
-        {
-            if (eventFilter == "allUsers")
-            {
-                return RedirectToAction("Index");
-            } else if (eventFilter == "wedding")
-            {
-                return RedirectToAction("WeddingFilter");
-            } else if (eventFilter == "baptism")
-            {
-                return RedirectToAction("BaptismFilter");
-            } else if (eventFilter == "myEvents")
-            {
-                return RedirectToAction("MyEventsFilter");
-            }
-            return NotFound();
-        }
-
-        public async Task<IActionResult> MyEventsFilter()
-        {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser != null)
-            {
-                IEnumerable<Event> events = _context.Events.Where(u => u.CreatorUserId == currentUser.Id).ToList();
-                return View(events);
-            }
-            return View();
-        }
-
-        public IActionResult WeddingFilter()
-        {
-            IEnumerable<Event> events = _context.WeddingEvents;
-            return View(events);
-        }
-
-        public IActionResult BaptismFilter()
-        {
-            IEnumerable<Event> events = _context.BaptismEvents;
-            return View(events);
-        }
-
-        
-
+ 
         public IActionResult CreateWeddingEvent()
         {
             return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateWeddingEvent(WeddingEvent weddingEvent)
-        {
-            var currentUser = await _userManager.GetUserAsync(User);
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    if (currentUser != null)
-                    {
-                        weddingEvent.CreatorUserId = currentUser.Id.ToString();
-                        weddingEvent.EventType = "Wedding".ToString();
-                        _context.WeddingEvents.Add(weddingEvent);
-                        _context.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                    else { return NotFound(); }
-                }
-            } catch (DbUpdateException)
-            {
-                ModelState.AddModelError("", "Unable to save changes. " +
-                    "Try again, and if the problem persists " +
-                    "see your system administrator.");
-            }
-            return RedirectToAction("Create");
         }
 
         public IActionResult CreateBaptismEvent()
@@ -146,23 +73,52 @@ namespace InvitaShare.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateBaptismEvent(BaptismEvent baptismEvent)
+        //Hidden input for EventType in View
+        public async Task<IActionResult> CreateEvent(Event eventModel)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            if (ModelState.IsValid)
+            try
             {
-                if (currentUser != null)
+                if (ModelState.IsValid)
                 {
-                    baptismEvent.CreatorUserId = currentUser.Id.ToString();
-                    baptismEvent.EventType = "Baptism".ToString();
-                    _context.BaptismEvents.Add(baptismEvent);
-                    _context.SaveChanges();
-                    return RedirectToAction("Index");
+                    if (currentUser != null)
+                    {
+                        eventModel.CreatorUserId = currentUser.Id.ToString();
+                        _context.Events.Add(eventModel);
+                        _context.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    else { return NotFound(); }
                 }
-                else { return NotFound(); }
+            } catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
+                return RedirectToAction("Create");
             }
             return RedirectToAction("Create");
         }
+
+        
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> CreateBaptismEvent(BaptismEvent baptismEvent)
+        //{
+        //    var currentUser = await _userManager.GetUserAsync(User);
+        //    if (ModelState.IsValid)
+        //    {
+        //        if (currentUser != null)
+        //        {
+        //            baptismEvent.CreatorUserId = currentUser.Id.ToString();
+        //            baptismEvent.EventType = "Baptism".ToString();
+        //            _context.BaptismEvents.Add(baptismEvent);
+        //            _context.SaveChanges();
+        //            return RedirectToAction("Index");
+        //        }
+        //        else { return NotFound(); }
+        //    }
+        //    return RedirectToAction("Create");
+        //}
     }
 
 

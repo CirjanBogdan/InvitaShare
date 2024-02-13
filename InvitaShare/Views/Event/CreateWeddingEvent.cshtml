@@ -4,17 +4,16 @@
     ViewData["Title"] = "CreateWeddingEvent";
 }
 
-@* <div>
-    <partial name="_CreateAndFilters.cshtml" />
-</div> *@
-
 <h1>CreateWeddingEvent</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateWeddingEvent">
+        <form asp-action="CreateEvent">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="EventType" value="wedding" />
+
             <div class="form-group">
                 <label asp-for="EventName" class="control-label"></label>
                 <input asp-for="EventName" class="form-control" />
