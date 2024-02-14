@@ -14,7 +14,6 @@ namespace InvitaShare.Models
         public string? ChurchName { get; set; }
         public DateTime? EventDate { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public ICollection<Guest> Guests { get; set; } = new List<Guest>();
         public string CreatedOnView
         {
             get { return CreatedOn.ToShortDateString(); }
