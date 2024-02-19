@@ -11,10 +11,10 @@ namespace InvitaShare.Controllers
     public class InvitationsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         public int PageIndex { get; set; }
 
-        public InvitationsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public InvitationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -22,7 +22,7 @@ namespace InvitaShare.Controllers
         // GET: InvitationController
         public async Task<IActionResult> Index()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = await _context.ApplicationUsers.ToListAsync();
             return View(users);
         }
 

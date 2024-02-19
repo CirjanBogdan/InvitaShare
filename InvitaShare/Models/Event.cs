@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvitaShare.Models
 {
@@ -8,8 +9,8 @@ namespace InvitaShare.Models
         public int Id { get; set; }
         [Required]
         public string EventName { get; set; } = null!;
-        public string? CreatorUserId { get; set; }
-        public string? EventType { get; set; }
+        [Required]
+        public string EventType { get; set; } = null!;
         public string? RestaurantName { get; set; }
         public string? ChurchName { get; set; }
         public DateTime? EventDate { get; set; }
@@ -18,5 +19,8 @@ namespace InvitaShare.Models
         {
             get { return CreatedOn.ToShortDateString(); }
         }
+        public string ApplicationUserId { get; set; } = null!;
+        [ForeignKey("ApplicationUserId")]
+        public ApplicationUser ApplicationUser { get; set; } = null!;
     }
 }

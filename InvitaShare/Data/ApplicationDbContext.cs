@@ -1,13 +1,14 @@
 ﻿using InvitaShare.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace InvitaShare.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+         : base(options)
         {
         }
 
@@ -21,13 +22,11 @@ namespace InvitaShare.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<Event>()
-            //    .HasMany(e => e.Guests)
-            //    .WithOne(e => e.Event)
-            //    .HasForeignKey(e => e.EventId)
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasMany(c => c.Events)
+            //    .WithOne(e => e.ApplicationUser)
+            //    .HasForeignKey(e => e.ApplicationUserId)
             //    .IsRequired();
-
-            
         }
     }
     

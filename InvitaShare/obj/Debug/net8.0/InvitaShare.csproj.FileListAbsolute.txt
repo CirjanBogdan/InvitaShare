@@ -269,3 +269,4 @@ C:\Users\KBO\source\repos\InvitaShare\InvitaShare\bin\Debug\net8.0\Microsoft.Asp
 C:\Users\KBO\source\repos\InvitaShare\InvitaShare\bin\Debug\net8.0\Microsoft.AspNetCore.Components.Web.dll
 C:\Users\KBO\source\repos\InvitaShare\InvitaShare\bin\Debug\net8.0\Microsoft.AspNetCore.Metadata.dll
 C:\Users\KBO\source\repos\InvitaShare\InvitaShare\bin\Debug\net8.0\Microsoft.JSInterop.dll
+C:\Users\KBO\source\repos\InvitaShare\InvitaShare\bin\Debug\net8.0\AutoMapper.dll

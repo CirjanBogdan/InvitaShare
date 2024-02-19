@@ -1,30 +1,25 @@
 ﻿using InvitaShare.Data;
 using InvitaShare.Models;
+using InvitaShare.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using AutoMapper;
 
 namespace InvitaShare.Controllers
 {
     public class EventController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
         public int PageIndex { get; set; }
 
-        public EventController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public EventController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
-        }
-        
-        public IActionResult Test()
-        {
-            return View(_context.Events.ToList());
+            _mapper = mapper;
         }
 
         [Authorize]
@@ -60,10 +55,40 @@ namespace InvitaShare.Controllers
             }
             return RedirectToAction("Index");
         }
- 
+
         public IActionResult CreateWeddingEvent()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateWeddingEvent(WeddingEventDTO weddingModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = await _userManager.GetUserAsync(User);
+                    if (user != null)
+                    {
+                        var _wedding = _mapper.Map<WeddingEvent>(weddingModel);
+                        _wedding.ApplicationUserId = user.Id;
+                        _context.WeddingEvents.Add(_wedding);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Unable to save changes.");
+            }
+            return RedirectToAction("Index");
         }
 
         public IActionResult CreateBaptismEvent()
@@ -73,53 +98,101 @@ namespace InvitaShare.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //Hidden input for EventType in View
-        public async Task<IActionResult> CreateEvent(Event eventModel)
+        public async Task<IActionResult> CreateBaptismEvent(BaptismEventDTO baptismModel)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (currentUser != null)
+                    var user = await _userManager.GetUserAsync(User);
+                    if (user != null)
                     {
-                        eventModel.CreatorUserId = currentUser.Id.ToString();
-                        _context.Events.Add(eventModel);
-                        _context.SaveChanges();
+                        var _baptism = _mapper.Map<BaptismEvent>(baptismModel);
+                        _baptism.ApplicationUserId = user.Id;
+                        _context.BaptismEvents.Add(_baptism);
+                        await _context.SaveChangesAsync();
                         return RedirectToAction("Index");
                     }
-                    else { return NotFound(); }
                 }
-            } catch (DbUpdateException)
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception)
             {
                 ModelState.AddModelError("", "Unable to save changes.");
-                return RedirectToAction("Create");
             }
-            return RedirectToAction("Create");
+            return RedirectToAction("Index");
         }
 
-        
+        [HttpGet]
+        [Route("EditEvent/{id}")]
+        public IActionResult EditEvent(int id)
+        {
+            var ev = _context.Events.FirstOrDefault(s => s.Id == id);
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateBaptismEvent(BaptismEvent baptismEvent)
-        //{
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (currentUser != null)
-        //        {
-        //            baptismEvent.CreatorUserId = currentUser.Id.ToString();
-        //            baptismEvent.EventType = "Baptism".ToString();
-        //            _context.BaptismEvents.Add(baptismEvent);
-        //            _context.SaveChanges();
-        //            return RedirectToAction("Index");
-        //        }
-        //        else { return NotFound(); }
-        //    }
-        //    return RedirectToAction("Create");
-        //}
+            if (ev == null)
+            {
+                return NotFound(); 
+            }
+            if (ev is WeddingEvent)
+            {
+                return View("EditWeddingEvent", ev);
+            }
+            else if (ev is BaptismEvent)
+            {
+                return View("EditBaptismEvent", ev);
+            }
+            return BadRequest("Invalid event type");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditWeddingEvent(WeddingEventDTO weddingEvent)
+        {
+            if (ModelState.IsValid)
+            {
+                var oldWedding = _context.WeddingEvents.FirstOrDefault(s => s.Id == weddingEvent.Id);
+                if (oldWedding != null)
+                {
+                    _mapper.Map(weddingEvent, oldWedding);
+                    _context.Update(oldWedding);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return NotFound(); 
+                }
+            }
+            else
+            {
+                return View("EditWeddingEvent", weddingEvent);
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditBaptismEvent(BaptismEventDTO baptismDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                var baptism = _context.BaptismEvents.FirstOrDefault(s => s.Id == baptismDTO.Id);
+                if (baptism != null)
+                {
+                    _mapper.Map(baptismDTO, baptism);
+                    _context.Update(baptism);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return View("EditBaptismEvent", baptismDTO);
+            }
+            return RedirectToAction("Index");
+        }
     }
-
-
 }
