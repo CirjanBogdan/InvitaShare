@@ -38,6 +38,22 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcQ3JlYXRlV2VkZGluZ0V2ZW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/KBO/source/repos/InvitaShare/InvitaShare/Views/Event/DeleteBaptismEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcRGVsZXRlQmFwdGlzbUV2ZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/KBO/source/repos/InvitaShare/InvitaShare/Views/Event/DeleteWeddingEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcRGVsZXRlV2VkZGluZ0V2ZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/KBO/source/repos/InvitaShare/InvitaShare/Views/Event/DetailsBaptismEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcRGV0YWlsc0JhcHRpc21FdmVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/KBO/source/repos/InvitaShare/InvitaShare/Views/Event/DetailsWeddingEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcRGV0YWlsc1dlZGRpbmdFdmVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/KBO/source/repos/InvitaShare/InvitaShare/Views/Event/EditBaptismEvent.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXZlbnRcRWRpdEJhcHRpc21FdmVudC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

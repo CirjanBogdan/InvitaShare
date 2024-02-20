@@ -26,7 +26,7 @@ namespace InvitaShare.Controllers
         public async Task<IActionResult> Index(int? pageNumber, string? eventFilter)
         {
             var pageSize = 3;
-            var events = _context.Events.AsQueryable();
+            var events =  _context.Events.AsQueryable();
             SetEventFilter(eventFilter, ref events);
             return View(await PaginatedList<Event>.CreateAsync(events, pageNumber ?? 1, pageSize));
         }
@@ -84,9 +84,9 @@ namespace InvitaShare.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Unable to save changes.");
+                ModelState.AddModelError("", $"Unable to save changes. {ex.Message}");
             }
             return RedirectToAction("Index");
         }
@@ -119,9 +119,10 @@ namespace InvitaShare.Controllers
                     return NotFound();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError("", "Unable to save changes.");
+                // Log the exception for debugging
+                ModelState.AddModelError("", $"Unable to save changes. {ex.Message}");
             }
             return RedirectToAction("Index");
         }
@@ -194,5 +195,96 @@ namespace InvitaShare.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        [Route("DetailsEvent/{id}")]
+        public IActionResult DetailsEvent(int id)
+        {
+            var even = _context.Events.SingleOrDefault(s => s.Id == id);
+
+            if (even == null)
+            {
+                return NotFound();
+            }
+            if (even is WeddingEvent weddingEvent)
+            {
+                return View("DetailsWeddingEvent", weddingEvent);
+            }
+            else if (even is BaptismEvent baptismEvent)
+            {
+                return View("DetailsBaptismEvent", baptismEvent);
+            }
+            return BadRequest("Invalid event type");
+        }
+
+        public IActionResult DetailsWeddingEvent(int id)
+        {
+            var weddingEvent = _context.Events.OfType<WeddingEvent>().SingleOrDefault(i => i.Id == id);
+            if (weddingEvent == null)
+            {
+                return NotFound();
+            }
+            return View(weddingEvent);
+        }
+
+        public IActionResult DetailsBaptismEvent(int id)
+        {
+            var baptismEvent = _context.Events.OfType<BaptismEvent>().SingleOrDefault(i => i.Id == id);
+            if (baptismEvent == null)
+            {
+                return NotFound();
+            }
+            return View(baptismEvent);
+        }
+
+        [HttpGet]
+        [Route("DeleteEvent/{id}")]
+        public IActionResult DeleteEvent(int id)
+        {
+            var even = _context.Events.SingleOrDefault(s => s.Id == id);
+
+            if (even == null)
+            {
+                return NotFound();
+            }
+            if (even is WeddingEvent weddingEvent)
+            {
+                return View("DeleteWeddingEvent", weddingEvent);
+            }
+            else if (even is BaptismEvent baptismEvent)
+            {
+                return View("DeleteBaptismEvent", baptismEvent);
+            }
+            return BadRequest("Invalid event type");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteWeddingEvent(int id)
+        {
+            var weddingEvent = await _context.WeddingEvents.FindAsync(id);
+            if (weddingEvent == null)
+            {
+                return NotFound();
+            }
+            _context.WeddingEvents.Remove(weddingEvent);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteBaptismEvent(int id)
+        {
+            var baptismEvent = await _context.BaptismEvents.FindAsync(id);
+            if (baptismEvent == null)
+            {
+                return NotFound();
+            }
+            _context.BaptismEvents.Remove(baptismEvent);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
     }
 }

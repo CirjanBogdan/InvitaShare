@@ -1,0 +1,58 @@
+﻿@model InvitaShare.Models.BaptismEvent
+
+<div>
+    <h4>@Model.EventName</h4>
+    <hr />
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.EventName)</th>
+                <td>@Html.DisplayFor(model => model.EventName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.ChildName)</th>
+                <td>@Html.DisplayFor(model => model.ChildName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.MotherName)</th>
+                <td>@Html.DisplayFor(model => model.MotherName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.FatherName)</th>
+                <td>@Html.DisplayFor(model => model.FatherName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.GodParent1)</th>
+                <td>@Html.DisplayFor(model => model.GodParent1)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.GodParent2)</th>
+                <td>@Html.DisplayFor(model => model.GodParent2)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.RestaurantName)</th>
+                <td>@Html.DisplayFor(model => model.RestaurantName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.ChurchName)</th>
+                <td>@Html.DisplayFor(model => model.ChurchName)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.EventDate)</th>
+                <td>@Html.DisplayFor(model => model.EventDate)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.CreatedOn)</th>
+                <td>@Html.DisplayFor(model => model.CreatedOn)</td>
+            </tr>
+            <tr>
+                <th scope="row">@Html.DisplayNameFor(model => model.ApplicationUser)</th>
+                <td>@Html.DisplayFor(model => model.ApplicationUser.Id)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="EditEvent" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

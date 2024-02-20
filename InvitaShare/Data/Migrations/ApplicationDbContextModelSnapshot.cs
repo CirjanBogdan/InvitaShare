@@ -134,7 +134,7 @@ namespace InvitaShare.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Event");
 
@@ -157,7 +157,7 @@ namespace InvitaShare.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Invitations");
+                    b.ToTable("Invitations", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -335,7 +335,7 @@ namespace InvitaShare.Data.Migrations
                     b.Property<string>("GroomName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Events", t =>
+                    b.ToTable("Events", null, t =>
                         {
                             t.Property("GodParent1")
                                 .HasColumnName("WeddingEvent_GodParent1");
