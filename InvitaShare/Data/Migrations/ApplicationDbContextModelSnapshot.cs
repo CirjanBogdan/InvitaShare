@@ -44,6 +44,9 @@ namespace InvitaShare.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Invites")
+                        .HasColumnType("int");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -134,14 +137,29 @@ namespace InvitaShare.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Event");
 
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("InvitaShare.Models.Invitation", b =>
+            modelBuilder.Entity("InvitaShare.Models.EventUser", b =>
+                {
+                    b.Property<int?>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("EventId", "ApplicationUserId");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("EventUsers");
+                });
+
+            modelBuilder.Entity("InvitaShare.ViewModels.GuestRegisteredDTO", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -149,15 +167,18 @@ namespace InvitaShare.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("GuestEmail")
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EventName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("GuestUserName")
+                    b.Property<string>("UserMail")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Invitations", (string)null);
+                    b.ToTable("GuestRegisteredDTO");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -335,7 +356,7 @@ namespace InvitaShare.Data.Migrations
                     b.Property<string>("GroomName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Events", null, t =>
+                    b.ToTable("Events", t =>
                         {
                             t.Property("GodParent1")
                                 .HasColumnName("WeddingEvent_GodParent1");
@@ -356,6 +377,25 @@ namespace InvitaShare.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("InvitaShare.Models.EventUser", b =>
+                {
+                    b.HasOne("InvitaShare.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("GuestEvents")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("InvitaShare.Models.Event", "Event")
+                        .WithMany("GuestEvents")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -412,6 +452,13 @@ namespace InvitaShare.Data.Migrations
             modelBuilder.Entity("InvitaShare.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Events");
+
+                    b.Navigation("GuestEvents");
+                });
+
+            modelBuilder.Entity("InvitaShare.Models.Event", b =>
+                {
+                    b.Navigation("GuestEvents");
                 });
 #pragma warning restore 612, 618
         }

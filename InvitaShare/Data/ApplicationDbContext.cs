@@ -15,32 +15,36 @@ namespace InvitaShare.Data
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Event> Events { get; set; }
-        public DbSet<WeddingEvent> WeddingEvents { get; set;}
-        public DbSet<BaptismEvent> BaptismEvents { get; set;}
-        public DbSet<Invitation> Invitations { get; set; }
+        public DbSet<WeddingEvent> WeddingEvents { get; set; }
+        public DbSet<BaptismEvent> BaptismEvents { get; set; }
+        public DbSet<EventUser> EventUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            ////modelBuilder.Entity<ApplicationUser>()
-            ////    .HasMany(c => c.Events)
-            ////    .WithOne(e => e.ApplicationUser)
-            ////    .HasForeignKey(e => e.ApplicationUserId)
-            ////    .IsRequired();
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(c => c.Events)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey(e => e.ApplicationUserId)
+                .IsRequired();
 
-            //modelBuilder.Entity<GuestEvent>()
-            //    .HasKey(bc => new { bc.EventId, bc.GuestId });
-            //modelBuilder.Entity<GuestEvent>()
-            //    .HasOne(bc => bc.Book)
-            //    .WithMany(b => b.BookCategories)
-            //    .HasForeignKey(bc => bc.BookId);
-            //modelBuilder.Entity<BookCategory>()
-            //    .HasOne(bc => bc.Category)
-            //    .WithMany(c => c.BookCategories)
-            //    .HasForeignKey(bc => bc.CategoryId);
+            modelBuilder.Entity<EventUser>()
+                .HasKey(bc => new { bc.EventId, bc.ApplicationUserId });
+            modelBuilder.Entity<EventUser>()
+                .HasOne(bc => bc.Event)
+                .WithMany(b => b.EventUsers)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasForeignKey(bc => bc.EventId);
+
+            modelBuilder.Entity<EventUser>()
+                .HasOne(bc => bc.ApplicationUser)
+                .WithMany(c => c.EventUsers)
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasForeignKey(bc => bc.ApplicationUserId);
         }
-        public DbSet<InvitaShare.ViewModels.WeddingEventDTO> WeddingEventDTO { get; set; } = default!;
+        public DbSet<InvitaShare.ViewModels.EventUserDTO> GuestRegisteredDTO { get; set; } = default!;
+        //public DbSet<InvitaShare.ViewModels.WeddingEventDTO> WeddingEventDTO { get; set; } = default!;
     }
-    
+
 }

@@ -22,5 +22,7 @@ namespace InvitaShare.Models
         public string ApplicationUserId { get; set; } = null!;
         [ForeignKey("ApplicationUserId")]
         public ApplicationUser ApplicationUser { get; set; } = null!;
+
+        public ICollection<EventUser> EventUsers { get; set; }
     }
 }

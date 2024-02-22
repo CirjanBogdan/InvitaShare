@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InvitaShare")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2332be5c5da913000b3f74e99a3a849ee99bed07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+65a28a249431d97ba152d2bf64d0cfd95ccdcb2b")]
 [assembly: System.Reflection.AssemblyProductAttribute("InvitaShare")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InvitaShare")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
