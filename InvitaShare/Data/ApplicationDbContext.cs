@@ -23,11 +23,11 @@ namespace InvitaShare.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<ApplicationUser>()
-                .HasMany(c => c.Events)
-                .WithOne(e => e.ApplicationUser)
-                .HasForeignKey(e => e.ApplicationUserId)
-                .IsRequired();
+            //modelBuilder.Entity<ApplicationUser>()
+            //    .HasMany(c => c.Events)
+            //    .WithOne(e => e.ApplicationUser)
+            //    .HasForeignKey(e => e.ApplicationUserId)
+            //    .IsRequired();
 
             modelBuilder.Entity<EventUser>()
                 .HasKey(bc => new { bc.EventId, bc.ApplicationUserId });

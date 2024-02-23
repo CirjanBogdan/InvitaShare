@@ -3,7 +3,8 @@
 <p>
     <a asp-action="CreateUserGuest">Create New</a>
 </p>
-<h1>@ViewData["EventName"] - Guest List</h1>
+<h6 style="color: red;">@TempData["ViewMessage"]</h6>
+<h3>@ViewData["EventName"] - Guest List</h3>
 <table class="table">
     <thead>
         <tr>

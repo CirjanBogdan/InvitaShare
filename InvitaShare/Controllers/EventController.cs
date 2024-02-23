@@ -131,19 +131,19 @@ namespace InvitaShare.Controllers
         [Route("EditEvent/{id}")]
         public IActionResult EditEvent(int id)
         {
-            var ev = _context.Events.FirstOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.FirstOrDefault(s => s.Id == id);
 
-            if (ev == null)
+            if (currentEvent == null)
             {
                 return NotFound(); 
             }
-            if (ev is WeddingEvent)
+            if (currentEvent is WeddingEvent)
             {
-                return View("EditWeddingEvent", ev);
+                return View("EditWeddingEvent", currentEvent);
             }
-            else if (ev is BaptismEvent)
+            else if (currentEvent is BaptismEvent)
             {
-                return View("EditBaptismEvent", ev);
+                return View("EditBaptismEvent", currentEvent);
             }
             return BadRequest("Invalid event type");
         }
@@ -245,17 +245,17 @@ namespace InvitaShare.Controllers
         [Route("DeleteEvent/{id}")]
         public IActionResult DeleteEvent(int id)
         {
-            var even = _context.Events.SingleOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == id);
 
-            if (even == null)
+            if (currentEvent == null)
             {
                 return NotFound();
             }
-            if (even is WeddingEvent weddingEvent)
+            if (currentEvent is WeddingEvent weddingEvent)
             {
                 return View("DeleteWeddingEvent", weddingEvent);
             }
-            else if (even is BaptismEvent baptismEvent)
+            else if (currentEvent is BaptismEvent baptismEvent)
             {
                 return View("DeleteBaptismEvent", baptismEvent);
             }
@@ -271,6 +271,11 @@ namespace InvitaShare.Controllers
             {
                 return NotFound();
             }
+            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == id).ToList();
+            foreach (var eventUser in relatedEventUsers)
+            {
+                _context.EventUsers.Remove(eventUser);
+            }
             _context.WeddingEvents.Remove(weddingEvent);
             await _context.SaveChangesAsync();
             TempData["ViewMessage"] = "The event has been successfuly deleted.";
@@ -285,6 +290,11 @@ namespace InvitaShare.Controllers
             if (baptismEvent == null)
             {
                 return NotFound();
+            }
+            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == id).ToList();
+            foreach (var eventUser in relatedEventUsers)
+            {
+                _context.EventUsers.Remove(eventUser);
             }
             _context.BaptismEvents.Remove(baptismEvent);
             await _context.SaveChangesAsync();

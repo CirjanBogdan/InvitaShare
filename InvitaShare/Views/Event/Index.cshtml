@@ -1,7 +1,7 @@
 ﻿@model PaginatedList<Event>
 
 
-<h5>@TempData["ViewMessage"]</h5>
+<h6 style="color: red;">@TempData["ViewMessage"]</h6>
 @using (Html.BeginForm("CreateNewEvent", "Event"))
 {
     <div class="d-flex">

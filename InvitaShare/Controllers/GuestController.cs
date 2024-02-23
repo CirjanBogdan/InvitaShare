@@ -12,7 +12,7 @@ namespace InvitaShare.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public GuestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public GuestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -20,13 +20,9 @@ namespace InvitaShare.Controllers
 
         public async Task<IActionResult> Index(int id)
         {
-            if (TempData.ContainsKey("currentEventId"))
-            {
-                id = Convert.ToInt32(TempData["currentEventId"]);
-            }
             if (id != 0)
             {
-                TempData["currentEventId"] = id;
+                HttpContext.Session.SetInt32("currentEventId", id);
             }
             var currentEvent = await _context.Events.FindAsync(id);
             if (currentEvent != null)
@@ -41,34 +37,27 @@ namespace InvitaShare.Controllers
             return View(guestList);
         }
 
-        public IActionResult CreateUserGuest()
+        public IActionResult CreateUserGuest(int id)
         {
-            if (TempData.ContainsKey("currentEventId"))
+            var capsuna = HttpContext.Session.GetInt32("currentEventId");
+            if (id != 0)
             {
-                if (TempData["currentEventId"] is int eventId)
-                {
-                    TempData["currentEventId"] = eventId;
-                    ViewBag.EventId = eventId;
-                }
+                HttpContext.Session.SetInt32("currentEventId", id);
             }
+            
+            var capsuna2 = HttpContext.Session.GetInt32("currentEventId");
             return View();
         }
-
-       
         [HttpPost]
         public async Task<IActionResult> CreateUserGuest(EventUserDTO guest)
         {
-           try
+            var currentEventId = HttpContext.Session.GetInt32("currentEventId");
+            try
             {
-                var currentEventId = 0;
-                if (TempData.ContainsKey("currentEventId"))
-                {
-                    currentEventId = Convert.ToInt32(TempData["currentEventId"]);
-                }
                 if (ModelState.IsValid)
                 {
                     var guestMail = guest.UserMail;
-                    if (guestMail != null)
+                    if (!string.IsNullOrEmpty(guestMail))
                     {
                         var guestUser = await _userManager.FindByEmailAsync(guestMail);
                         if (guestUser != null)
@@ -86,31 +75,21 @@ namespace InvitaShare.Controllers
                                 await _userManager.UpdateAsync(guestUser);
                                 _context.EventUsers.Add(eventUser);
                                 await _context.SaveChangesAsync();
+                                TempData["ViewMessage"] = "User has been invited.";
+                                return RedirectToAction("Index", new { id = currentEventId });
                             }
-                            else
-                            {
-                                TempData["ErrorMes"] = "User already invited.";
-                                return RedirectToAction("CreateGuestRegistered");
-                            }
-                        }
-                        else
-                        {
-                            TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
-                            return RedirectToAction("CreateGuestRegistered");
+                            TempData["ViewMessage"] = "The user has already been invited.";
+                            return RedirectToAction("CreateUserGuest", new { id = currentEventId });
                         }
                     }
                 }
-                else
-                {
-                    TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
-                    return RedirectToAction("CreateGuestRegistered");
-                }
-                TempData["currentEventId"] = currentEventId;
-                return RedirectToAction("Index");
-            } catch (Exception ex)
+                TempData["ViewMessage"] = "Username or Email does not exist. Please try again.";
+                return RedirectToAction("CreateUserGuest", new { id = currentEventId });                
+            } 
+            catch (Exception ex)
             {
-                TempData["ErrorMes"] = "The operation failed. Please try again." + ex.Message;
-                return RedirectToAction("CreateGuestRegistered");
+                TempData["ViewMessage"] = "The operation failed. Please try again." + ex.Message;
+                return RedirectToAction("CreateUserGuest", new { id = currentEventId });
             }
         }
     }
