@@ -13,7 +13,6 @@ namespace InvitaShare.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
-        public int PageIndex { get; set; }
 
         public EventController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
@@ -47,11 +46,11 @@ namespace InvitaShare.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateNewEvent([Bind("EventType")] Event @event)
+        public IActionResult CreateNewEvent([Bind("EventType")] Event newEvent)
         {
-            if (@event.EventType != null)
+            if (newEvent.EventType != null)
             {
-                return RedirectToAction("Create" + @event.EventType.ToString() + "Event");
+                return RedirectToAction("Create" + newEvent.EventType.ToString() + "Event");
             }
             return RedirectToAction("Index");
         }
@@ -76,6 +75,7 @@ namespace InvitaShare.Controllers
                         _wedding.ApplicationUserId = user.Id;
                         _context.WeddingEvents.Add(_wedding);
                         await _context.SaveChangesAsync();
+                        TempData["ViewMessage"] = "The event has been successfuly created.";
                         return RedirectToAction("Index");
                     }
                 }
@@ -86,7 +86,7 @@ namespace InvitaShare.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Unable to save changes. {ex.Message}");
+                TempData["ViewMessage"] = "The operation failed. Please try again." + ex.Message;
             }
             return RedirectToAction("Index");
         }
@@ -111,6 +111,7 @@ namespace InvitaShare.Controllers
                         _baptism.ApplicationUserId = user.Id;
                         _context.BaptismEvents.Add(_baptism);
                         await _context.SaveChangesAsync();
+                        TempData["ViewMessage"] = "The event has been successfuly created.";
                         return RedirectToAction("Index");
                     }
                 }
@@ -121,8 +122,7 @@ namespace InvitaShare.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging
-                ModelState.AddModelError("", $"Unable to save changes. {ex.Message}");
+                TempData["ViewMessage"] = "The operation failed. Please try again." + ex.Message;
             }
             return RedirectToAction("Index");
         }
@@ -153,15 +153,17 @@ namespace InvitaShare.Controllers
         {
             if (ModelState.IsValid)
             {
-                var oldWedding = _context.WeddingEvents.FirstOrDefault(s => s.Id == weddingEvent.Id);
-                if (oldWedding != null)
+                var currentWeddingEvent = _context.WeddingEvents.FirstOrDefault(s => s.Id == weddingEvent.Id);
+                if (currentWeddingEvent != null)
                 {
-                    _mapper.Map(weddingEvent, oldWedding);
-                    _context.Update(oldWedding);
+                    _mapper.Map(weddingEvent, currentWeddingEvent);
+                    _context.Update(currentWeddingEvent);
                     await _context.SaveChangesAsync();
+                    TempData["ViewMessage"] = "The event has been successfuly Updated.";
                 }
                 else
                 {
+                    TempData["ViewMessage"] = "The operation failed. Please try again.";
                     return NotFound(); 
                 }
             }
@@ -183,6 +185,7 @@ namespace InvitaShare.Controllers
                     _mapper.Map(baptismDTO, baptism);
                     _context.Update(baptism);
                     await _context.SaveChangesAsync();
+                    TempData["ViewMessage"] = "The event has been successfuly Updated.";
                 }
                 else
                 {
@@ -191,6 +194,7 @@ namespace InvitaShare.Controllers
             }
             else
             {
+                TempData["ViewMessage"] = "The operation failed. Please try again.";
                 return View("EditBaptismEvent", baptismDTO);
             }
             return RedirectToAction("Index");
@@ -200,17 +204,17 @@ namespace InvitaShare.Controllers
         [Route("DetailsEvent/{id}")]
         public IActionResult DetailsEvent(int id)
         {
-            var even = _context.Events.SingleOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == id);
 
-            if (even == null)
+            if (currentEvent == null)
             {
                 return NotFound();
             }
-            if (even is WeddingEvent weddingEvent)
+            if (currentEvent is WeddingEvent weddingEvent)
             {
                 return View("DetailsWeddingEvent", weddingEvent);
             }
-            else if (even is BaptismEvent baptismEvent)
+            else if (currentEvent is BaptismEvent baptismEvent)
             {
                 return View("DetailsBaptismEvent", baptismEvent);
             }
@@ -269,6 +273,7 @@ namespace InvitaShare.Controllers
             }
             _context.WeddingEvents.Remove(weddingEvent);
             await _context.SaveChangesAsync();
+            TempData["ViewMessage"] = "The event has been successfuly deleted.";
             return RedirectToAction("Index");
         }
 
@@ -283,6 +288,7 @@ namespace InvitaShare.Controllers
             }
             _context.BaptismEvents.Remove(baptismEvent);
             await _context.SaveChangesAsync();
+            TempData["ViewMessage"] = "The event has been successfuly deleted.";
             return RedirectToAction("Index");
         }
 

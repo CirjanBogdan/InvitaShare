@@ -7,96 +7,111 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace InvitaShare.Controllers
 {
-    // Sessions are not saved at RedirectToAction
     public class GuestController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
-        public int PageIndex { get; set; }
 
         public GuestController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
-            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index(int id)
         {
-            var capsuna = HttpContext.Session.GetInt32("currentEventId") ?? 0;
+            if (TempData.ContainsKey("currentEventId"))
+            {
+                id = Convert.ToInt32(TempData["currentEventId"]);
+            }
             if (id != 0)
             {
-                HttpContext.Session.SetInt32("currentEventId", id);
+                TempData["currentEventId"] = id;
             }
-            var currentEventId = HttpContext.Session.GetInt32("currentEventId") ?? 0;
-            var currentEvent = await _context.Events.FindAsync(currentEventId);
+            var currentEvent = await _context.Events.FindAsync(id);
             if (currentEvent != null)
             {
                 ViewData["EventName"] = currentEvent.EventName;
-                ViewBag.EventId = currentEventId;
             }
-            IEnumerable<EventUserDTO> eventUserDTOs = _context.EventUsers.Where(e => e.EventId == currentEventId).Select(b => new EventUserDTO
+            IEnumerable<EventUserDTO> guestList = _context.EventUsers.Where(e => e.EventId == id).Select(b => new EventUserDTO
             {
+                EventId = id,
                 UserMail = b.ApplicationUser.Email,
             });
-            return View(eventUserDTOs);
+            return View(guestList);
         }
 
-        public IActionResult CreateGuestRegistered()
+        public IActionResult CreateUserGuest()
         {
-            var id = HttpContext.Session.GetInt32("currentEventId") ?? 0;
-            ViewBag.EventId = id;
+            if (TempData.ContainsKey("currentEventId"))
+            {
+                if (TempData["currentEventId"] is int eventId)
+                {
+                    TempData["currentEventId"] = eventId;
+                    ViewBag.EventId = eventId;
+                }
+            }
             return View();
         }
 
-        
-
+       
         [HttpPost]
-        public async Task<IActionResult> CreateGuestRegistered(EventUserDTO guest)
+        public async Task<IActionResult> CreateUserGuest(EventUserDTO guest)
         {
-            var currentEventId = HttpContext.Session.GetInt32("currentEventId") ?? 0;
-            if (ModelState.IsValid)
+           try
             {
-                var guestMail = guest.UserMail;
-                if (guestMail != null)
+                var currentEventId = 0;
+                if (TempData.ContainsKey("currentEventId"))
                 {
-                    
-                    var guestUser = await _userManager.FindByEmailAsync(guestMail);
-                    if (guestUser != null)
+                    currentEventId = Convert.ToInt32(TempData["currentEventId"]);
+                }
+                if (ModelState.IsValid)
+                {
+                    var guestMail = guest.UserMail;
+                    if (guestMail != null)
                     {
-                        var existedUser = _context.EventUsers.Where(e => e.EventId == currentEventId &&
-                                          e.ApplicationUserId == guestUser.Id).Select(e => e.ApplicationUserId).FirstOrDefault();
-                        if (existedUser == null)
+                        var guestUser = await _userManager.FindByEmailAsync(guestMail);
+                        if (guestUser != null)
                         {
-                            EventUser eventUser = new EventUser()
+                            var guestUserId = _context.EventUsers.Where(e => e.EventId == currentEventId &&
+                                              e.ApplicationUserId == guestUser.Id).Select(e => e.ApplicationUserId).FirstOrDefault();
+                            if (guestUserId == null)
                             {
-                                EventId = currentEventId,
-                                ApplicationUserId = guestUser.Id
-                            };
-                            guestUser.Invites++;
-                            await _userManager.UpdateAsync(guestUser);
-                            _context.EventUsers.Add(eventUser);
-                            await _context.SaveChangesAsync();
-                        } else
+                                EventUser eventUser = new EventUser()
+                                {
+                                    EventId = currentEventId,
+                                    ApplicationUserId = guestUser.Id
+                                };
+                                guestUser.Invites++;
+                                await _userManager.UpdateAsync(guestUser);
+                                _context.EventUsers.Add(eventUser);
+                                await _context.SaveChangesAsync();
+                            }
+                            else
+                            {
+                                TempData["ErrorMes"] = "User already invited.";
+                                return RedirectToAction("CreateGuestRegistered");
+                            }
+                        }
+                        else
                         {
-                            TempData["ErrorMes"] = "User allready invited.";
+                            TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
                             return RedirectToAction("CreateGuestRegistered");
                         }
                     }
-                    else
-                    {
-                        TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
-                        return RedirectToAction("CreateGuestRegistered");
-                    }
                 }
-            }
-            else
+                else
+                {
+                    TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
+                    return RedirectToAction("CreateGuestRegistered");
+                }
+                TempData["currentEventId"] = currentEventId;
+                return RedirectToAction("Index");
+            } catch (Exception ex)
             {
-                TempData["ErrorMes"] = "Username or Email does not exist. Please try again.";
+                TempData["ErrorMes"] = "The operation failed. Please try again." + ex.Message;
                 return RedirectToAction("CreateGuestRegistered");
             }
-            return RedirectToAction("Index", new { id = currentEventId });
         }
     }
 }
