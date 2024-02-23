@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\KBO\\Source\\Repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj": {}
+    "C:\\Users\\KBO\\source\\repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj": {}
   },
   "projects": {
-    "C:\\Users\\KBO\\Source\\Repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj": {
+    "C:\\Users\\KBO\\source\\repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\KBO\\Source\\Repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj",
+        "projectUniqueName": "C:\\Users\\KBO\\source\\repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj",
         "projectName": "InvitaShare",
-        "projectPath": "C:\\Users\\KBO\\Source\\Repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj",
+        "projectPath": "C:\\Users\\KBO\\source\\repos\\InvitaShare\\InvitaShare\\InvitaShare.csproj",
         "packagesPath": "C:\\Users\\KBO\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\KBO\\Source\\Repos\\InvitaShare\\InvitaShare\\obj\\",
+        "outputPath": "C:\\Users\\KBO\\source\\repos\\InvitaShare\\InvitaShare\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\KBO\\AppData\\Roaming\\NuGet\\NuGet.Config",

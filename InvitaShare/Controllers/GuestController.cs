@@ -39,13 +39,10 @@ namespace InvitaShare.Controllers
 
         public IActionResult CreateUserGuest(int id)
         {
-            var capsuna = HttpContext.Session.GetInt32("currentEventId");
             if (id != 0)
             {
                 HttpContext.Session.SetInt32("currentEventId", id);
             }
-            
-            var capsuna2 = HttpContext.Session.GetInt32("currentEventId");
             return View();
         }
         [HttpPost]
