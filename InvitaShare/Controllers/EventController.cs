@@ -128,10 +128,10 @@ namespace InvitaShare.Controllers
         }
 
         [HttpGet]
-        [Route("EditEvent/{id}")]
-        public IActionResult EditEvent(int id)
+        //[Route("EditEvent/{id}")]
+        public IActionResult EditEvent(int eventId)
         {
-            var currentEvent = _context.Events.FirstOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.FirstOrDefault(s => s.Id == eventId);
 
             if (currentEvent == null)
             {
