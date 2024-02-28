@@ -18,25 +18,27 @@ namespace InvitaShare.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int id)
+        // Called from VIEW EventController/Index
+        public async Task<IActionResult> Index(int eventId)
         {
-            if (id != 0)
+            if (eventId != 0)
             {
-                HttpContext.Session.SetInt32("currentEventId", id);
+                HttpContext.Session.SetInt32("currentEventId", eventId);
             }
-            var currentEvent = await _context.Events.FindAsync(id);
+            var currentEvent = await _context.Events.FindAsync(eventId);
             if (currentEvent != null)
             {
                 ViewData["EventName"] = currentEvent.EventName;
             }
-            IEnumerable<EventUserDTO> guestList = _context.EventUsers.Where(e => e.EventId == id).Select(b => new EventUserDTO
+            IEnumerable<EventUserDTO> guestList = _context.EventUsers.Where(e => e.EventId == eventId).Select(b => new EventUserDTO
             {
-                EventId = id,
+                EventId = eventId,
                 UserMail = b.ApplicationUser.Email,
             });
             return View(guestList);
         }
 
+        // Called from VIEW GuestController/Index
         public IActionResult CreateUserGuest(int id)
         {
             if (id != 0)
@@ -45,6 +47,7 @@ namespace InvitaShare.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateUserGuest(EventUserDTO guest)
         {
