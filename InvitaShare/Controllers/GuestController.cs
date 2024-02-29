@@ -37,6 +37,7 @@ namespace InvitaShare.Controllers
             return View(guestList);
         }
 
+        [HttpGet]
         public IActionResult CreateUserGuest(int id)
         {
             if (id != 0)
@@ -45,6 +46,7 @@ namespace InvitaShare.Controllers
             }
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateUserGuest(EventUserDTO guest)
         {
@@ -88,6 +90,17 @@ namespace InvitaShare.Controllers
                 TempData["ViewMessage"] = "The operation failed. Please try again." + ex.Message;
                 return RedirectToAction("CreateUserGuest", new { id = currentEventId });
             }
+        }
+
+        [HttpGet]
+        public IActionResult DeleteUserGuest(string userMail)
+        {
+            if (userMail == null)
+            {
+                return NotFound();
+            }
+            EventUserDTO user = new EventUserDTO() { UserMail = userMail };
+            return View(user);
         }
     }
 }

@@ -8,5 +8,6 @@ namespace InvitaShare.ViewModels
         public int EventId { get; set; }
         public string? EventName { get; set; }
         public string? UserMail { get; set; }
+        public string? ApplicationUserId { get; set; }
     }
 }

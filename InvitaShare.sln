@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvitaShare", "InvitaShare\InvitaShare.csproj", "{ED924ACA-E059-4ADE-9242-970005836613}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvitaShare", "InvitaShare\InvitaShare.csproj", "{ED924ACA-E059-4ADE-9242-970005836613}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvitaShare.Tests", "InvitaShare.Tests\InvitaShare.Tests.csproj", "{BB5AEC6F-9695-4010-9ADF-7AD55F6ED1A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{ED924ACA-E059-4ADE-9242-970005836613}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED924ACA-E059-4ADE-9242-970005836613}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED924ACA-E059-4ADE-9242-970005836613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB5AEC6F-9695-4010-9ADF-7AD55F6ED1A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB5AEC6F-9695-4010-9ADF-7AD55F6ED1A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB5AEC6F-9695-4010-9ADF-7AD55F6ED1A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB5AEC6F-9695-4010-9ADF-7AD55F6ED1A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

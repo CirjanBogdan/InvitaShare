@@ -5,6 +5,12 @@
     <h4>@Model.EventName</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EventName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EventName)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.ChildName)
         </dt>
@@ -34,18 +40,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.GodParent2)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EventType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EventType)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.RestaurantName)
