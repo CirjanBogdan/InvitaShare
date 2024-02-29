@@ -128,10 +128,9 @@ namespace InvitaShare.Controllers
         }
 
         [HttpGet]
-        [Route("EditEvent/{id}")]
-        public IActionResult EditEvent(int id)
+        public IActionResult EditEvent(int eventId)
         {
-            var currentEvent = _context.Events.FirstOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.FirstOrDefault(s => s.Id == eventId);
 
             if (currentEvent == null)
             {
@@ -201,10 +200,9 @@ namespace InvitaShare.Controllers
         }
 
         [HttpGet]
-        [Route("DetailsEvent/{id}")]
-        public IActionResult DetailsEvent(int id)
+        public IActionResult DetailsEvent(int eventId)
         {
-            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == eventId);
 
             if (currentEvent == null)
             {
@@ -221,31 +219,10 @@ namespace InvitaShare.Controllers
             return BadRequest("Invalid event type");
         }
 
-        public IActionResult DetailsWeddingEvent(int id)
-        {
-            var weddingEvent = _context.Events.OfType<WeddingEvent>().SingleOrDefault(i => i.Id == id);
-            if (weddingEvent == null)
-            {
-                return NotFound();
-            }
-            return View(weddingEvent);
-        }
-
-        public IActionResult DetailsBaptismEvent(int id)
-        {
-            var baptismEvent = _context.Events.OfType<BaptismEvent>().SingleOrDefault(i => i.Id == id);
-            if (baptismEvent == null)
-            {
-                return NotFound();
-            }
-            return View(baptismEvent);
-        }
-
         [HttpGet]
-        [Route("DeleteEvent/{id}")]
-        public IActionResult DeleteEvent(int id)
+        public IActionResult DeleteEvent(int eventId)
         {
-            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == id);
+            var currentEvent = _context.Events.SingleOrDefault(s => s.Id == eventId);
 
             if (currentEvent == null)
             {
@@ -263,15 +240,15 @@ namespace InvitaShare.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteWeddingEvent(int id)
+        public async Task<IActionResult> DeleteWeddingEvent(int eventId)
         {
-            var weddingEvent = await _context.WeddingEvents.FindAsync(id);
+            var weddingEvent = await _context.WeddingEvents.FindAsync(eventId);
             if (weddingEvent == null)
             {
                 return NotFound();
             }
-            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == id).ToList();
+            // delete EventUser list of current event
+            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == eventId).ToList();
             foreach (var eventUser in relatedEventUsers)
             {
                 _context.EventUsers.Remove(eventUser);
@@ -283,15 +260,15 @@ namespace InvitaShare.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteBaptismEvent(int id)
+        public async Task<IActionResult> DeleteBaptismEvent(int eventId)
         {
-            var baptismEvent = await _context.BaptismEvents.FindAsync(id);
+            var baptismEvent = await _context.BaptismEvents.FindAsync(eventId);
             if (baptismEvent == null)
             {
                 return NotFound();
             }
-            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == id).ToList();
+            // delete EventUser list of current event
+            var relatedEventUsers = _context.EventUsers.Where(e => e.EventId == eventId).ToList();
             foreach (var eventUser in relatedEventUsers)
             {
                 _context.EventUsers.Remove(eventUser);

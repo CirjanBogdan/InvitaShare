@@ -71,11 +71,11 @@ else
                     @Html.DisplayFor(modelItem => item.EventDate)
                 </td>
                 <td>
-                    <a asp-controller="Guest" asp-action="Index" asp-route-id="@item.Id">GUEST LIST</a>
+                    <a asp-controller="Guest" asp-action="Index" asp-route-eventId="@item.Id">GUEST LIST</a>
                 </td>
                 <td>
                     
-                    <a asp-action="EditEvent" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="EditEvent" asp-route-eventId="@item.Id">Edit</a> |
                     <a asp-action="DetailsEvent" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="DeleteEvent" asp-route-id="@item.Id">Delete</a>
                 </td>
